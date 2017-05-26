@@ -1,0 +1,38 @@
+﻿@model IEnumerable<MovieRentalApplication.Entities.User>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+
+<h2>Users Index</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.userID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.creditcard)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.userID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.creditcard)
+        </td>
+    </tr>
+}
+
+</table>

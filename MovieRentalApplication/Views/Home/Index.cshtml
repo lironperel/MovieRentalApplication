@@ -1,0 +1,150 @@
+﻿@model IEnumerable<MovieRentalApplication.Entities.Movie>
+
+@{
+    ViewBag.Title = "Movie Rental Application";
+}
+
+
+
+<!-- Jumbotron Header -->
+<header class="jumbotron hero-spacer text-center">
+    <h1>Welcome to Movie Rental App</h1>
+    <hr class="my-4">
+    <h2>Please choose a movie for rent!</h2>
+</header>
+
+<hr>
+
+
+
+<!-- Title -->
+<div class="row">
+    <div class="col-lg-12">
+        <h3>Our movies</h3>
+    </div>
+</div>
+<!-- /.row -->
+<!-- Page Features -->
+
+<div class="container">
+<!--Movies list loop-->
+
+@{
+    int i = 0;
+    foreach (MovieRentalApplication.Entities.Movie movie in Model)
+    {
+        if (i % 3 == 0)
+        {
+            <!--Movie row Start-->
+            @Html.Raw(@"<div class=""row"" text - center>");
+        }
+        <!--Movie div Start-->
+        @Html.Raw(@"<div class=""col-md-3 col-sm-6 hero-feature"">");
+        @Html.Raw(@"<div class=""thumbnail"">");
+
+        if (movie.image == null)
+        {
+            @Html.Raw(@"<p>No image</p>");
+        }
+        else
+        {
+            var base64 = Convert.ToBase64String(movie.image);
+            var imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+
+            @Html.Raw(@"<img src=""");@imgSrc @Html.Raw(@""" alt="""" style=""width: 250px; height: 350px; "" />");
+        }
+        @Html.Raw(@"<div class=""caption"">");
+        @Html.Raw("<h3>");@movie.movieName@Html.Raw("</h3>");
+        if (movie.description.Length > 100)
+        {
+                                @Html.Raw("<p>"); @movie.description.Substring(0, 100) @Html.Raw("...</p>");
+        }
+        else
+        {
+                                @Html.Raw("<p>"); @movie.description @Html.Raw("</p>");
+        }
+        @Html.Raw(@"<a href=""javascript:void(0)"" class=""btn btn-primary"" onclick=""ShowMovie(");@movie.movieID @Html.Raw(@")"" >Rent Now!</a>");
+
+        @Html.Raw(@" | <a href=""#"" class=""btn btn-default"">More Info</a>");
+                        @Html.Raw(@"</div>");
+                    @Html.Raw(@"</div>");
+                @Html.Raw(@"</div>");
+                <!--Movie div end-->
+
+
+
+        if (i % 3 == 0 && i > 0)
+        {
+            <!--Movie row end-->
+
+            @Html.Raw("</div>");
+            <hr />
+        }
+        i++;
+    }
+    i--;
+    if (!(i % 3 == 0 && i > 0))
+    {
+        <!--Last Movie row end-->
+        @Html.Raw("</div>");
+        <hr />
+    }
+}
+<!--Movies list loop end-->
+</div>
+
+
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="javascript:void(0)" class="close" onclick="modalClose()">&times;</a>
+                <h3 class="modal-title">Movie details</h3>
+            </div>
+            <div class="modal-body" id="myModalBodyDiv">
+                ...
+
+            </div>
+            <div class="modal-footer" >
+                <a href="javascript:void(0)" class="btn btn-default" >Back</a>
+                <a href="javascript:void(0)" class="btn btn-primary" id="footer-rent-button" onclick="ShowPayment()">Rent Movie!</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    var ShowMovie = function (movieId) {
+
+        $.ajax({
+
+            type: "POST",
+            url: "/Home/View_MovieDetails",
+            data: { id : movieId },
+            success: function (response) {
+
+                $("#myModalBodyDiv").html(response);
+                
+                $("#myModal").modal("show");
+
+            }
+
+        })
+
+    };
+
+    var modalClose = function () {
+
+        $("#myModal").modal("hide");
+
+    };
+
+    var ShowPayment = function () {
+        document.getElementById('movie-details').style.display = "none";
+        document.getElementById('footer-rent-button').style.display = "none";
+        document.getElementById('payment').style.display = "block";
+    };
+
+</script>

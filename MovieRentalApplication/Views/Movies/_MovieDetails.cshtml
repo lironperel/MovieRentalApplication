@@ -1,0 +1,93 @@
+﻿@model MovieRentalApplication.Entities.Movie
+
+<div id="movie-details">
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.movieName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.movieName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.year)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.year)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.image)
+        </dt>
+
+        <dd>
+            @if (Model.image == null)
+            {
+                <div class="col-md-10">
+                    <input type="file" name="upload" />
+                </div>
+            }
+            else
+            {
+                var base64 = Convert.ToBase64String(Model.image);
+                var imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+
+
+                <div class="col-md-10">
+                    <img src="@imgSrc" style="width:150px;height:200px;" />
+                </div>
+            }
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.genre)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.genre)
+        </dd>
+
+    </dl>
+
+</div>
+
+<div class="well" id="payment" style="display:none;"  >
+    
+    @using (Html.BeginForm("Rent_MovieDetails", "Home", new { id = Model.movieID }, FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        @Html.Label("Name:")
+        @Html.TextBox("fullname", null, new { @class = "form-control" })
+        @Html.ValidationMessage("fullname")
+        @Html.Label("Credit Card:")
+        @Html.TextBox("credit", null, new { @class = "form-control" })
+        @Html.ValidationMessage("credit")
+        <br />
+        <input class="btn btn-success" type="submit" value="Pay!">
+    }
+</div>
+
+<script type="text/javascript">
+
+    var formClick = function () {
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Rent_MovieDetails", "Home", new { id = Model.movieID })'
+        });
+    };
+
+</script>
